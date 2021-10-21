@@ -1,8 +1,5 @@
 defmodule KataTest do
-  use ExUnit.Case
-  doctest Kata
+  @moduledoc false
 
-  test "greets the world" do
-    assert Kata.hello() == :world
-  end
+  use ExUnit.Case
 end

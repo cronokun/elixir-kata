@@ -1,18 +1,5 @@
 defmodule Kata do
   @moduledoc """
-  Documentation for `Kata`.
+  Programming kata(s) writen in Elixir.
   """
-
-  @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> Kata.hello()
-      :world
-
-  """
-  def hello do
-    :world
-  end
 end
