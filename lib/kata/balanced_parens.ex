@@ -11,7 +11,7 @@ defmodule Kata.BalancedParens do
   end
 
   def balanced_parens_count(n) do
-    n |> balanced_parens() |> length()
+    n |> clever_balanced_parens() |> length()
   end
 
   defp parens(str, 1, 1, list), do: [str <> "()" | list]
@@ -20,5 +20,16 @@ defmodule Kata.BalancedParens do
 
   defp parens(str, m, n, list) do
     parens(str <> "(", m - 1, n, parens(str <> ")", m, n - 1, list))
+  end
+
+  def clever_balanced_parens(n) when n < 0, do: []
+  def clever_balanced_parens(0), do: [""]
+  def clever_balanced_parens(n) when n > 0 do
+    for cn <- 0..n,
+      s0 <- clever_balanced_parens(cn - 1),
+      s1 <- clever_balanced_parens(n - cn)
+    do
+      "(" <> s0 <> ")" <> s1
+    end
   end
 end
