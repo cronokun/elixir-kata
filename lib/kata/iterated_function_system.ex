@@ -68,7 +68,7 @@ defmodule Kata.IFS do
   """
 
   def ifs(base, iterations) do
-    do_ifs(base, iterations) |> to_output() |> tap(&IO.puts/1)
+    do_ifs(base, iterations) |> to_output()
   end
 
   defp do_ifs(base, 1), do: base
