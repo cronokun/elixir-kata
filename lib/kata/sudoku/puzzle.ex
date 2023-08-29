@@ -109,7 +109,9 @@ defmodule Kata.SudokuSolver.Puzzle do
     end
   end
 
-  def print(puzzle) do
+  def print(puzzle, opts \\ []) do
+    if opts[:label], do: IO.puts(opts[:label])
+
     for i <- 1..9, into: "" do
       row =
         for j <- 1..9, into: "" do

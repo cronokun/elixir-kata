@@ -5,6 +5,7 @@ defmodule Kata.SudokuSolver.Solver do
   alias Kata.SudokuSolver.LastRemainingCellStrategy
   alias Kata.SudokuSolver.LastPossibleNumberStrategy
   alias Kata.SudokuSolver.ObviousSingleStrategy
+  alias Kata.SudokuSolver.HiddenSingleStrategy
 
   @moduledoc """
   # Strategies to Solve
@@ -27,7 +28,7 @@ defmodule Kata.SudokuSolver.Solver do
   cell (a) and (c) can't be 7 or 9, so we can remove these numbers from cell's hints.
 
 
-  ## Obvious triles
+  ## Obvious triplets
 
   Similar to "Obvious paris" but for triplets.
 
@@ -118,37 +119,72 @@ defmodule Kata.SudokuSolver.Solver do
   +-------+-------+-------+        +-----------------------+
   """
 
-  def solve(puzzle), do: solve(puzzle, puzzle, 1)
+  @all_strategies [
+    LastFreeCellStrategy,
+    LastRemainingCellStrategy,
+    LastPossibleNumberStrategy,
+    ObviousSingleStrategy,
+    HiddenSingleStrategy
+  ]
 
-  def solve(puzzle, original, n) do
-    IO.puts("\n\n> SOLVING PUZZLE...\n")
+  def solve!(puzzle) do
+    IO.puts("\n> SOLVING PUZZLE...")
 
-    updated_puzzle =
-      puzzle
-      |> LastFreeCellStrategy.apply()
-      |> LastRemainingCellStrategy.apply()
-      |> LastPossibleNumberStrategy.apply()
-      |> ObviousSingleStrategy.apply()
+    case do_solve(puzzle, @all_strategies) do
+      {:ok, puzzle} ->
+        IO.puts("DONE\n")
+        puzzle
 
-    cond do
-      Validator.solved?(updated_puzzle) ->
-        updated_puzzle
-
-      puzzle_changed?(puzzle, updated_puzzle) ->
-        solve(updated_puzzle, original, n + 1)
-
-      true ->
-        IO.puts("\n--  FAILED • #{n} steps  --------------------\n")
-        IO.puts("Input:\n")
-        Puzzle.print(original)
-        IO.puts("Output:\n")
-        Puzzle.print(updated_puzzle)
-
+      {:error, unsolved_puzzle} ->
+        IO.puts("FAILED!\n")
+        Puzzle.print(puzzle, label: "before:\n")
+        Puzzle.print(unsolved_puzzle, label: "after:\n")
         raise "Can't solve the puzzle"
     end
   end
 
-  defp puzzle_changed?(old_puzzle, updated_puzzle) do
-    Puzzle.blank_cells_count(old_puzzle) !== Puzzle.blank_cells_count(updated_puzzle)
+  defp do_solve(puzzle, []) do
+    {:error, puzzle}
+  end
+
+  defp do_solve(puzzle, [strategy | rest]) do
+    case fill_in_with(puzzle, strategy) do
+      {:done, solved_puzzle} ->
+        check_puzzle!(solved_puzzle)
+
+      {:cont, updated_puzzle} ->
+        do_solve(updated_puzzle, @all_strategies)
+
+      {:halt, puzzle} ->
+        do_solve(puzzle, rest)
+    end
+  end
+
+  defp fill_in_with(puzzle, strategy) do
+    updated_puzzle = strategy.fill_in(puzzle)
+    count_before = Puzzle.blank_cells_count(puzzle)
+    count_after = Puzzle.blank_cells_count(updated_puzzle)
+
+    log_changes(strategy, count_before, count_after)
+
+    cond do
+      count_after == 0 ->
+        {:done, updated_puzzle}
+
+      count_after == count_before ->
+        {:halt, puzzle}
+
+      true ->
+        {:cont, updated_puzzle}
+    end
+  end
+
+  defp log_changes(strategy, count_before, count_after) do
+    module = strategy |> inspect() |> String.split(".") |> List.last()
+    IO.puts("[#{module}] #{count_before} -> #{count_after} blank cells left")
+  end
+
+  defp check_puzzle!(puzzle) do
+    if Validator.solved?(puzzle), do: {:ok, puzzle}, else: raise("OH NOES!")
   end
 end

@@ -1,9 +1,5 @@
-defmodule Kata.SudokuSolver.ObviousSingleStrategy do
+defmodule Kata.SudokuSolver.HiddenSingleStrategy do
   @moduledoc """
-  If a cell has a single possible hint, then it's the value of the cell!
-
-  Typical strategy to get hints for a cell: get all filled numbers in a row, column and block,
-  and see what numbers are missing.
   """
 
   alias Kata.SudokuSolver.Puzzle
@@ -35,13 +31,22 @@ defmodule Kata.SudokuSolver.ObviousSingleStrategy do
   end
 
   defp filter_hints(hints) do
-    Enum.reduce(hints, [], fn {position, values}, acc ->
-      if length(values) == 1 do
-        hint = {position, hd(values)}
-        [hint | acc]
-      else
-        acc
-      end
+    hints
+    |> Enum.group_by(fn {{i, j}, _values} -> Puzzle.block_number(i, j) end)
+    |> Map.values()
+    |> Enum.reduce([], fn hints, acc -> acc ++ get_hidden_singles(hints) end)
+  end
+
+  defp get_hidden_singles(hints) do
+    hints
+    |> Enum.reduce([], fn {_, values}, acc -> acc ++ values end)
+    |> Enum.frequencies()
+    |> Enum.reduce([], fn {value, count}, acc ->
+      if count == 1, do: [value | acc], else: acc
+    end)
+    |> Enum.map(fn value ->
+      {position, _} = Enum.find(hints, fn {_, values} -> value in values end)
+      {position, value}
     end)
   end
 

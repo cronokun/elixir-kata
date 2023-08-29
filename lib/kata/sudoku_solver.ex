@@ -7,7 +7,7 @@ defmodule Kata.SudokuSolver do
     solved =
       raw
       |> Puzzle.build()
-      |> Solver.solve()
+      |> Solver.solve!()
       |> Puzzle.to_raw()
 
     {:ok, solved}

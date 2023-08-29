@@ -1,6 +1,4 @@
 defmodule Kata.SudokuSolver.LastRemainingCellStrategy do
-  alias Kata.SudokuSolver.Puzzle
-
   @moduledoc """
   Numbers should not repeat within 3×3 block, vertical column and horizontal row. If a number
   can't be filled in any other cell except one, fill it in!
@@ -23,19 +21,7 @@ defmodule Kata.SudokuSolver.LastRemainingCellStrategy do
   so the only remaining cell that can have it is cell (8,1).
   """
 
-  def apply(puzzle) do
-    updated_puzzle = fill_in(puzzle)
-    count_before = Puzzle.blank_cells_count(puzzle)
-    count_after = Puzzle.blank_cells_count(updated_puzzle)
-
-    IO.puts("[LastRemainingCell] #{count_before} -> #{count_after} blank cells left")
-
-    if count_after == count_before or count_after == 0 do
-      updated_puzzle
-    else
-      apply(updated_puzzle)
-    end
-  end
+  alias Kata.SudokuSolver.Puzzle
 
   def fill_in(puzzle) do
     puzzle

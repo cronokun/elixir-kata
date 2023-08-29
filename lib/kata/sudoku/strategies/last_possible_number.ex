@@ -22,20 +22,6 @@ defmodule Kata.SudokuSolver.LastPossibleNumberStrategy do
 
   alias Kata.SudokuSolver.Puzzle
 
-  def apply(puzzle) do
-    updated_puzzle = fill_in(puzzle)
-    count_before = Puzzle.blank_cells_count(puzzle)
-    count_after = Puzzle.blank_cells_count(updated_puzzle)
-
-    IO.puts("[LastPossibleNumber] #{count_before} -> #{count_after} blank cells left")
-
-    if count_after == count_before or count_after == 0 do
-      updated_puzzle
-    else
-      apply(updated_puzzle)
-    end
-  end
-
   def fill_in(puzzle) do
     puzzle
     |> blank_cells()

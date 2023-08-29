@@ -35,7 +35,7 @@ defmodule Kata.SudokuSolverTest do
     end
 
     test "solves hard puzzle" do
-      puzzle1 = [
+      puzzle = [
         [5, 3, 0, 0, 7, 0, 0, 0, 0],
         [6, 0, 0, 1, 9, 5, 0, 0, 0],
         [0, 9, 8, 0, 0, 0, 0, 6, 0],
@@ -47,7 +47,7 @@ defmodule Kata.SudokuSolverTest do
         [0, 0, 0, 0, 8, 0, 0, 7, 9]
       ]
 
-      expected1 = [
+      expected = [
         [5, 3, 4, 6, 7, 8, 9, 1, 2],
         [6, 7, 2, 1, 9, 5, 3, 4, 8],
         [1, 9, 8, 3, 4, 2, 5, 6, 7],
@@ -59,9 +59,11 @@ defmodule Kata.SudokuSolverTest do
         [3, 4, 5, 2, 8, 6, 1, 7, 9]
       ]
 
-      assert {:ok, ^expected1} = solve(puzzle1)
+      assert {:ok, ^expected} = solve(puzzle)
+    end
 
-      puzzle2 = [
+    test("solves expert puzzle") do
+      puzzle = [
         [0, 0, 0, 4, 0, 0, 0, 9, 0],
         [0, 0, 0, 2, 5, 3, 0, 0, 0],
         [0, 0, 0, 1, 0, 0, 0, 4, 7],
@@ -73,7 +75,7 @@ defmodule Kata.SudokuSolverTest do
         [0, 3, 0, 0, 0, 1, 0, 0, 2]
       ]
 
-      expected2 = [
+      expected = [
         [5, 1, 6, 4, 8, 7, 2, 9, 3],
         [9, 4, 7, 2, 5, 3, 1, 8, 6],
         [3, 8, 2, 1, 9, 6, 5, 4, 7],
@@ -85,11 +87,8 @@ defmodule Kata.SudokuSolverTest do
         [8, 3, 9, 5, 4, 1, 6, 7, 2]
       ]
 
-      assert {:ok, ^expected2} = solve(puzzle2)
-    end
+      assert {:ok, ^expected} = solve(puzzle)
 
-    @tag :skip
-    test("solves expert puzzle") do
       puzzle1 = [
         [0, 0, 1, 4, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 6, 2, 0, 0, 0],
