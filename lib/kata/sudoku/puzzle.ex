@@ -7,8 +7,7 @@ defmodule Kata.SudokuSolver.Puzzle do
 
   @doc "Build a puzzle structure from raw data"
   def build(raw) do
-    %__MODULE__{}
-    |> put_cells(List.flatten(raw), {1, 1})
+    put_cells(%__MODULE__{}, List.flatten(raw), {1, 1})
   end
 
   defp put_cells(puzzle, [], _), do: puzzle
@@ -74,6 +73,7 @@ defmodule Kata.SudokuSolver.Puzzle do
     put_in(puzzle, [Access.key!(:cells), {i, j}], value)
   end
 
+  # FIXME: shouldn't really be public function
   def block_number(i, j) when i in 1..3 and j in 1..3, do: 1
   def block_number(i, j) when i in 1..3 and j in 4..6, do: 2
   def block_number(i, j) when i in 1..3 and j in 7..9, do: 3
@@ -96,35 +96,12 @@ defmodule Kata.SudokuSolver.Puzzle do
 
   def blank_cells_count(puzzle), do: Enum.count(puzzle.cells, fn {_, value} -> is_nil(value) end)
 
-  @doc "Converts puzzle back to nested list representation"
+  @doc "Convert puzzle back to nested list representation"
   def to_raw(%__MODULE__{} = puzzle) do
     for i <- 1..9, into: [] do
       for j <- 1..9, into: [] do
         puzzle.cells[{i, j}] || 0
       end
     end
-  end
-
-  def print(puzzle, opts \\ []) do
-    if opts[:label], do: IO.puts(opts[:label])
-
-    for i <- 1..9, into: "" do
-      row =
-        for j <- 1..9, into: "" do
-          val =
-            case puzzle.cells[{i, j}] do
-              nil -> "."
-              n -> to_string(n)
-            end
-
-          sep = if j in [3, 6], do: "| ", else: ""
-          val <> " " <> sep
-        end
-
-      sep = if i in [3, 6], do: "\n------+-------+------", else: ""
-
-      row <> sep <> "\n"
-    end
-    |> IO.puts()
   end
 end

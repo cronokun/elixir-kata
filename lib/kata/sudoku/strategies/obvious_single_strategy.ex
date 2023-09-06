@@ -7,35 +7,17 @@ defmodule Kata.SudokuSolver.ObviousSingleStrategy do
   """
 
   alias Kata.SudokuSolver.Puzzle
+  alias Kata.SudokuSolver.Utils
 
   def fill_in(puzzle) do
     puzzle
-    |> get_hints()
+    |> Utils.update_hints()
     |> filter_hints()
     |> fill_in_cells(puzzle)
   end
 
-  @all_numbers [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-  defp get_hints(puzzle) do
-    puzzle.cells
-    |> Enum.filter(fn {_, value} -> is_nil(value) end)
-    |> Enum.sort()
-    |> Enum.map(fn {{i, j}, nil} ->
-      row_values = Puzzle.get_row_values(puzzle, i)
-      column_values = Puzzle.get_column_values(puzzle, j)
-      block_values = Puzzle.get_block_values(puzzle, i, j)
-
-      values = Enum.uniq(row_values ++ column_values ++ block_values)
-
-      hints = @all_numbers -- values
-
-      {{i, j}, hints}
-    end)
-  end
-
-  defp filter_hints(hints) do
-    Enum.reduce(hints, [], fn {position, values}, acc ->
+  defp filter_hints(puzzle) do
+    Enum.reduce(puzzle.hints, [], fn {position, values}, acc ->
       if length(values) == 1 do
         hint = {position, hd(values)}
         [hint | acc]

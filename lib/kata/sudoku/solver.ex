@@ -1,5 +1,6 @@
 defmodule Kata.SudokuSolver.Solver do
   alias Kata.SudokuSolver.Puzzle
+  alias Kata.SudokuSolver.Utils
   alias Kata.SudokuSolver.Validator
   alias Kata.SudokuSolver.LastFreeCellStrategy
   alias Kata.SudokuSolver.LastRemainingCellStrategy
@@ -118,8 +119,8 @@ defmodule Kata.SudokuSolver.Solver do
 
       {:error, unsolved_puzzle} ->
         IO.puts("FAILED!\n")
-        Puzzle.print(puzzle, label: "before:\n")
-        Puzzle.print(unsolved_puzzle, label: "after:\n")
+        Utils.print(puzzle, label: "before:\n")
+        Utils.print(unsolved_puzzle, label: "after:\n")
         raise "Can't solve the puzzle"
     end
   end
