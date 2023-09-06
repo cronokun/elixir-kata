@@ -84,19 +84,15 @@ defmodule Kata.SudokuSolver.Puzzle do
   def block_number(i, j) when i in 7..9 and j in 4..6, do: 8
   def block_number(i, j) when i in 7..9 and j in 7..9, do: 9
 
-  def coords_by_block_number(n) do
-    case n do
-      1 -> {1..3, 1..3}
-      2 -> {1..3, 4..6}
-      3 -> {1..3, 7..9}
-      4 -> {4..6, 1..3}
-      5 -> {4..6, 4..6}
-      6 -> {4..6, 7..9}
-      7 -> {7..9, 1..3}
-      8 -> {7..9, 4..6}
-      9 -> {7..9, 7..9}
-    end
-  end
+  defp coords_by_block_number(1), do: {1..3, 1..3}
+  defp coords_by_block_number(2), do: {1..3, 4..6}
+  defp coords_by_block_number(3), do: {1..3, 7..9}
+  defp coords_by_block_number(4), do: {4..6, 1..3}
+  defp coords_by_block_number(5), do: {4..6, 4..6}
+  defp coords_by_block_number(6), do: {4..6, 7..9}
+  defp coords_by_block_number(7), do: {7..9, 1..3}
+  defp coords_by_block_number(8), do: {7..9, 4..6}
+  defp coords_by_block_number(9), do: {7..9, 7..9}
 
   def blank_cells_count(puzzle), do: Enum.count(puzzle.cells, fn {_, value} -> is_nil(value) end)
 

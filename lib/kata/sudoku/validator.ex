@@ -1,13 +1,19 @@
 defmodule Kata.SudokuSolver.Validator do
+  @moduledoc """
+  Validate that puzzle is correct: every horizontal row, vertical column and 3x3 blocks have
+  only numbers from 1 to 9, and every number is used only once per row, column, block.
+  """
+
   alias Kata.SudokuSolver.Puzzle
 
   def verify(raw) when is_list(raw), do: raw |> Puzzle.build() |> verify()
 
   def verify(%Puzzle{} = puzzle) do
     # TODO: think of better errors, i.e. {:error, "duplicating number in row 3"}
-    cond do
-      all_cells_filled_in?(puzzle) and cells_filled_correctly?(puzzle) -> :ok
-      true -> :error
+    if all_cells_filled_in?(puzzle) and cells_filled_correctly?(puzzle) do
+      :ok
+    else
+      :error
     end
   end
 
