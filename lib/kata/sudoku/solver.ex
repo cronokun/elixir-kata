@@ -143,7 +143,7 @@ defmodule Kata.SudokuSolver.Solver do
   end
 
   defp fill_in_with(puzzle, strategy) do
-    updated_puzzle = strategy.fill_in(puzzle)
+    updated_puzzle = strategy.run(puzzle)
     count_before = Puzzle.blank_cells_count(puzzle)
     count_after = Puzzle.blank_cells_count(updated_puzzle)
 

@@ -3,7 +3,7 @@ defmodule Kata.Sudoku.ObviousSingleStrategyTest do
 
   import SudokuTestHelper
 
-  test ".fill_in/1 fills in obvious numbers based on hints" do
+  test ".run/1 fills in obvious numbers based on hints" do
     assert_puzzle_changed(
       [
         [0, 5, 0, 7, 8, 9, 0, 0, 1],

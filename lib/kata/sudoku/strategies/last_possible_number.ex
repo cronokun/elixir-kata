@@ -22,7 +22,7 @@ defmodule Kata.SudokuSolver.LastPossibleNumberStrategy do
 
   alias Kata.SudokuSolver.Puzzle
 
-  def fill_in(puzzle) do
+  def run(puzzle) do
     puzzle
     |> blank_cells()
     |> get_last_possible_numbers(puzzle)

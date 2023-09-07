@@ -9,7 +9,7 @@ defmodule SudokuTestHelper do
     actual =
       puzzle
       |> Puzzle.build()
-      |> strategy.fill_in()
+      |> strategy.run()
       |> Puzzle.to_raw()
 
     assert actual == expected

@@ -3,7 +3,7 @@ defmodule Kata.SudokuSolver.LastPossibleNumberStrategyTest do
 
   import SudokuTestHelper
 
-  test ".fill_in/1 fills cells with last possible number in row, column and block" do
+  test ".run/1 fills cells with last possible number in row, column and block" do
     assert_puzzle_changed(
       [
         [0, 5, 0, 7, 8, 0, 0, 0, 0],

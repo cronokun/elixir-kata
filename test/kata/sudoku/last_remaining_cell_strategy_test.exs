@@ -5,7 +5,7 @@ defmodule Kata.SudokuSolver.LastRemainingCellStrategyTest do
 
   import SudokuTestHelper
 
-  test ".fill_in/1 fills in last free cell in block, row, or column" do
+  test ".run/1 fills in last free cell in block, row, or column" do
     assert_puzzle_changed(
       [
         [0, 0, 2, 9, 5, 1, 7, 8, 6],

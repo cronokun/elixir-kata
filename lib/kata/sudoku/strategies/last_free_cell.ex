@@ -26,7 +26,7 @@ defmodule Kata.SudokuSolver.LastFreeCellStrategy do
 
   alias Kata.SudokuSolver.Puzzle
 
-  def fill_in(puzzle) do
+  def run(puzzle) do
     [
       last_free_cells_for(Puzzle.rows(puzzle)),
       last_free_cells_for(Puzzle.columns(puzzle)),

@@ -23,7 +23,7 @@ defmodule Kata.SudokuSolver.LastRemainingCellStrategy do
 
   alias Kata.SudokuSolver.Puzzle
 
-  def fill_in(puzzle) do
+  def run(puzzle) do
     puzzle
     |> Puzzle.blocks()
     |> Map.values()
