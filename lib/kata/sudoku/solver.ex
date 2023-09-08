@@ -7,6 +7,7 @@ defmodule Kata.SudokuSolver.Solver do
   alias Kata.SudokuSolver.LastPossibleNumberStrategy
   alias Kata.SudokuSolver.ObviousSingleStrategy
   alias Kata.SudokuSolver.HiddenSingleStrategy
+  alias Kata.SudokuSolver.PointingPairStrategy
 
   @moduledoc """
   # Strategies to Solve
@@ -106,7 +107,8 @@ defmodule Kata.SudokuSolver.Solver do
     LastRemainingCellStrategy,
     LastPossibleNumberStrategy,
     ObviousSingleStrategy,
-    HiddenSingleStrategy
+    HiddenSingleStrategy,
+    PointingPairStrategy
   ]
 
   def solve!(puzzle) do

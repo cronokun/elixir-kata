@@ -30,12 +30,15 @@ defmodule Kata.SudokuSolver.Utils do
   end
 
   @doc "Make a list of possible values for each black cell"
+  def update_hints(puzzle) when map_size(puzzle.hints) > 0, do: puzzle
+
   def update_hints(puzzle) do
     hints =
       puzzle.cells
       |> Enum.filter(fn {_, value} -> is_nil(value) end)
       |> Enum.sort()
       |> Enum.map(fn cell -> get_hints_for_cell(puzzle, cell) end)
+      |> Map.new()
 
     Map.put(puzzle, :hints, hints)
   end
