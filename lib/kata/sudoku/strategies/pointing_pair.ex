@@ -22,14 +22,11 @@ defmodule Kata.SudokuSolver.PointingPairStrategy do
   """
 
   alias Kata.SudokuSolver.Puzzle
-  alias Kata.SudokuSolver.Utils
 
   def run(puzzle) do
-    puzzle_with_hints = Utils.update_hints(puzzle)
-
-    puzzle_with_hints
+    puzzle
     |> get_rejected_hints()
-    |> update_hints(puzzle_with_hints)
+    |> update_hints(puzzle)
   end
 
   defp get_rejected_hints(puzzle) do

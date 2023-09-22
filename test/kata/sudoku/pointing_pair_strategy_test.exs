@@ -7,7 +7,6 @@ defmodule Kata.SudokuSolver.PointingPairStrategyTest do
   alias Kata.SudokuSolver.PointingPairStrategy
   alias Kata.SudokuSolver.HiddenSingleStrategy
 
-  @tag :focus
   test ".run/1 fills in cells using painting pairs... or does it?!" do
     puzzle =
       Puzzle.build([

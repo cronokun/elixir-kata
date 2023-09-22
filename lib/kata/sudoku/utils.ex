@@ -27,33 +27,9 @@ defmodule Kata.SudokuSolver.Utils do
       row <> sep <> "\n"
     end
     |> IO.puts()
-  end
 
-  @doc "Make a list of possible values for each black cell"
-  def update_hints(puzzle) when map_size(puzzle.hints) > 0, do: puzzle
-
-  def update_hints(puzzle) do
-    hints =
-      puzzle.cells
-      |> Enum.filter(fn {_, value} -> is_nil(value) end)
-      |> Enum.sort()
-      |> Enum.map(fn cell -> get_hints_for_cell(puzzle, cell) end)
-      |> Map.new()
-
-    Map.put(puzzle, :hints, hints)
-  end
-
-  @all_numbers [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-  defp get_hints_for_cell(puzzle, {{i, j}, nil}) do
-    row_values = Puzzle.get_row_values(puzzle, i)
-    column_values = Puzzle.get_column_values(puzzle, j)
-    block_values = Puzzle.get_block_values(puzzle, i, j)
-
-    values = Enum.uniq(row_values ++ column_values ++ block_values)
-
-    hints = @all_numbers -- values
-
-    {{i, j}, hints}
+    if opts[:hints] do
+      IO.inspect(puzzle.hints, label: "\n Hints", limit: :infinity, charlists: :as_lists)
+    end
   end
 end

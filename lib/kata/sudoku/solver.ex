@@ -122,7 +122,7 @@ defmodule Kata.SudokuSolver.Solver do
       {:error, unsolved_puzzle} ->
         IO.puts("FAILED!\n")
         Utils.print(puzzle, label: "before:\n")
-        Utils.print(unsolved_puzzle, label: "after:\n")
+        Utils.print(unsolved_puzzle, hints: true, label: "after:\n")
         raise "Can't solve the puzzle"
     end
   end
@@ -132,7 +132,7 @@ defmodule Kata.SudokuSolver.Solver do
   end
 
   defp do_solve(puzzle, [strategy | rest]) do
-    case fill_in_with(puzzle, strategy) do
+    case run(puzzle, strategy) do
       {:done, solved_puzzle} ->
         check_puzzle!(solved_puzzle)
 
@@ -144,29 +144,40 @@ defmodule Kata.SudokuSolver.Solver do
     end
   end
 
-  defp fill_in_with(puzzle, strategy) do
+  defp run(puzzle, strategy) do
     updated_puzzle = strategy.run(puzzle)
-    count_before = Puzzle.blank_cells_count(puzzle)
-    count_after = Puzzle.blank_cells_count(updated_puzzle)
 
-    log_changes(strategy, count_before, count_after)
+    log_changes(strategy, puzzle, updated_puzzle)
 
     cond do
-      count_after == 0 ->
+      puzzle_solved?(updated_puzzle) ->
         {:done, updated_puzzle}
 
-      count_after == count_before ->
-        {:halt, puzzle}
+      puzzle_changed?(puzzle, updated_puzzle) ->
+        {:cont, updated_puzzle}
 
       true ->
-        {:cont, updated_puzzle}
+        {:halt, puzzle}
     end
   end
 
-  defp log_changes(strategy, count_before, count_after) do
+  defp log_changes(strategy, a, b) do
     module = strategy |> inspect() |> String.split(".") |> List.last()
-    IO.puts("[#{module}] #{count_before} -> #{count_after} blank cells left")
+    ca = Puzzle.blank_cells_count(a)
+    cb = Puzzle.blank_cells_count(b)
+    ha = Puzzle.hints_count(a)
+    hb = Puzzle.hints_count(b)
+
+    IO.puts("[#{module}]  cells #{ca} -> #{cb}  •  hints #{ha} -> #{hb}")
   end
+
+  defp puzzle_changed?(a, b), do: cells_filled?(a, b) or hints_changed?(a, b)
+
+  defp puzzle_solved?(puzzle), do: Puzzle.blank_cells_count(puzzle) == 0
+
+  defp cells_filled?(a, b), do: Puzzle.blank_cells_count(a) != Puzzle.blank_cells_count(b)
+
+  defp hints_changed?(a, b), do: Puzzle.hints_count(a) != Puzzle.hints_count(b)
 
   defp check_puzzle!(puzzle) do
     if Validator.solved?(puzzle), do: {:ok, puzzle}, else: raise("OH NOES!")

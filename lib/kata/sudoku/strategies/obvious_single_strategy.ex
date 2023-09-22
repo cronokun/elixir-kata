@@ -7,11 +7,9 @@ defmodule Kata.SudokuSolver.ObviousSingleStrategy do
   """
 
   alias Kata.SudokuSolver.Puzzle
-  alias Kata.SudokuSolver.Utils
 
   def run(puzzle) do
     puzzle
-    |> Utils.update_hints()
     |> filter_hints()
     |> fill_in_cells(puzzle)
   end

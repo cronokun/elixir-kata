@@ -7,7 +7,9 @@ defmodule Kata.SudokuSolver.Puzzle do
 
   @doc "Build a puzzle structure from raw data"
   def build(raw) do
-    put_cells(%__MODULE__{}, List.flatten(raw), {1, 1})
+    %__MODULE__{}
+    |> put_cells(List.flatten(raw), {1, 1})
+    |> update_hints()
   end
 
   defp put_cells(puzzle, [], _), do: puzzle
@@ -70,7 +72,9 @@ defmodule Kata.SudokuSolver.Puzzle do
   end
 
   def update_cell(puzzle, {i, j}, value) do
-    put_in(puzzle, [Access.key!(:cells), {i, j}], value)
+    puzzle
+    |> put_in([Access.key!(:cells), {i, j}], value)
+    |> update_hints_for({i, j}, value)
   end
 
   # FIXME: shouldn't really be public function
@@ -96,6 +100,8 @@ defmodule Kata.SudokuSolver.Puzzle do
 
   def blank_cells_count(puzzle), do: Enum.count(puzzle.cells, fn {_, value} -> is_nil(value) end)
 
+  def hints_count(puzzle), do: puzzle.hints |> Map.values() |> Enum.count()
+
   @doc "Convert puzzle back to nested list representation"
   def to_raw(%__MODULE__{} = puzzle) do
     for i <- 1..9, into: [] do
@@ -103,5 +109,43 @@ defmodule Kata.SudokuSolver.Puzzle do
         puzzle.cells[{i, j}] || 0
       end
     end
+  end
+
+  @doc "Make a list of possible values for each black cell"
+  def update_hints(puzzle) do
+    hints =
+      puzzle.cells
+      |> Enum.filter(fn {_, value} -> is_nil(value) end)
+      |> Enum.sort()
+      |> Enum.map(fn cell -> get_hints_for_cell(puzzle, cell) end)
+      |> Map.new()
+
+    Map.put(puzzle, :hints, hints)
+  end
+
+  defp update_hints_for(puzzle, {ii, jj}, n) do
+    {bis, bjs} = block_number(ii, jj) |> coords_by_block_number()
+
+    puzzle.hints
+    |> Enum.filter(fn {{i, j}, _} -> i == ii or j == jj or (i in bis and j in bjs) end)
+    |> Enum.uniq()
+    |> Enum.reduce(puzzle, fn {position, _}, p ->
+      update_in(p, [Access.key!(:hints), position], &List.delete(&1, n))
+    end)
+    |> put_in([Access.key!(:hints), {ii, jj}], [])
+  end
+
+  @all_numbers [1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+  defp get_hints_for_cell(puzzle, {{i, j}, nil}) do
+    row_values = get_row_values(puzzle, i)
+    column_values = get_column_values(puzzle, j)
+    block_values = get_block_values(puzzle, i, j)
+
+    values = Enum.uniq(row_values ++ column_values ++ block_values)
+
+    hints = @all_numbers -- values
+
+    {{i, j}, hints}
   end
 end
