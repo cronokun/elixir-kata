@@ -108,12 +108,12 @@ defmodule Kata.Combinatorics do
   end
 
   @doc "Returns all unique permutation of list's elements"
-  def uniq_perm(list) do
+  def uniq_perms(list) do
     list
     |> Enum.frequencies()
     |> Map.to_list()
     |> case do
-      [{_a, _i}] -> list
+      [{_a, _i}] -> [list]
       [{a, n}, {b, m}] -> do_uniq_pair_perm([], {a, n}, {b, m}, [])
       _ -> permutations(list) |> Enum.uniq()
     end
@@ -139,5 +139,33 @@ defmodule Kata.Combinatorics do
     v1 = do_uniq_pair_perm([a | cur], {a, n - 1}, {b, m}, acc)
     v2 = do_uniq_pair_perm([b | cur], {a, n}, {b, m - 1}, acc)
     v1 ++ v2
+  end
+
+  @doc "Returns number of all unique permutations of list's items"
+  def uniq_perms_count(list) do
+    list
+    |> Enum.frequencies()
+    |> Map.to_list()
+    |> case do
+      [{_a, _i}] -> 1
+      [{_a, n}, {_b, m}] -> do_count_uniq_perms(n + m, n, %{}) |> elem(0)
+      _ -> list |> permutations() |> length()
+    end
+  end
+
+  defp do_count_uniq_perms(n, 1, memo), do: {n, Map.put_new(memo, {n, 1}, n)}
+  defp do_count_uniq_perms(n, n, memo), do: {1, Map.put_new(memo, {n, n}, 1)}
+
+  defp do_count_uniq_perms(n, m, memo) do
+    {p1, memo} = get_or_calc_prev(memo, {n - 1, m}, &do_count_uniq_perms/3)
+    {p2, memo} = get_or_calc_prev(memo, {n - 1, m - 1}, &do_count_uniq_perms/3)
+    {p1 + p2, Map.put_new(memo, {n, m}, p1 + p2)}
+  end
+
+  defp get_or_calc_prev(memo, {n, m}, fun) do
+    case memo[{n, m}] do
+      nil -> fun.(n, m, memo)
+      val -> {val, memo}
+    end
   end
 end
