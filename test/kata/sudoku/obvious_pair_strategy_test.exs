@@ -6,7 +6,6 @@ defmodule Kata.SudokuSolver.ObviousPairStrategyTest do
   alias Kata.SudokuSolver.Puzzle
   alias Kata.SudokuSolver.ObviousPairStrategy
 
-  @tag :focus
   test ".run/1 removes obvious pair numbers from hints in the same block" do
     puzzle =
       Puzzle.build([
